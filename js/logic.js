@@ -10,6 +10,23 @@ var usgsMap = L.map("map", {
   layers: [baseMaps.Light]
 });
 
+// Create a function to assign a color
+function getColor(val)
+{
+  let color = Math.floor(val);
+  switch (color)
+  {
+    case (0): return "Green";
+    case (1): return "Yellow";
+    case (2): return "GoldenRod";
+    case (3): return "Orange";
+    case (4): return "OrangeRed";
+    case (5): return "Red";
+    default: return "Red";
+  }
+}
+
+
 // Create a layer for earthquake data
 var earthquakeLayer = L.layerGroup().addTo(usgsMap);
 
@@ -27,10 +44,11 @@ d3.json(geoData, function(data)
       {
         L.circle([location.coordinates[1],location.coordinates[0]], 
         {
-          color: "red",
-          fillColor: "#f03",
+          color: "black",
+          fillColor: getColor(data.features[i].properties.mag),
           fillOpacity: 0.5,
-          radius: 2000.0 * data.features[i].properties.mag
+          radius: 2000.0 * data.features[i].properties.mag,
+          weight: 0.5
         }).addTo(earthquakeLayer);
       }
    }
