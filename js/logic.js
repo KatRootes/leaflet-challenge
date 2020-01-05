@@ -11,19 +11,11 @@ var usgsMap = L.map("map", {
 });
 
 // Create a function to assign a color
+var colors = ["Green", "Yellow", "GoldenRod", "Orange", "OrangeRed", "Red"];
 function getColor(val)
 {
   let color = Math.floor(val);
-  switch (color)
-  {
-    case (0): return "Green";
-    case (1): return "Yellow";
-    case (2): return "GoldenRod";
-    case (3): return "Orange";
-    case (4): return "OrangeRed";
-    case (5): return "Red";
-    default: return "Red";
-  }
+  return color > 5 ? colors[5] : colors[color];
 }
 
 
@@ -52,6 +44,40 @@ d3.json(geoData, function(data)
         }).addTo(earthquakeLayer);
       }
    }
+
+   // Set up the legend
+  var legend = L.control({ position: "bottomright" });
+  legend.onAdd = function() {
+    var div = L.DomUtil.create("div", "my-legend");
+    var labels = [];
+
+    // Add min & max
+    var legendInfo = //"<div class=\"my-legend\">" +
+      "<div class=\"legend-title\">Magnitude</div>";// +
+      // "<div class=\"legend-scale\">" +
+      // "</div>" + 
+      // "</div>";
+      // "<div class=\"labels\">" +
+        // "<div>0-1</div>" +
+        // "<div>1-2</div>" +
+        // "<div>2-3</div>" +
+        // "<div>3-4</div>" +
+        // "<div>5+</div>" +
+      // "</div>";
+
+    div.innerHTML = legendInfo;
+
+    colors.forEach(function(color, index) {
+      labels.push("<li><span style=\"background-color: " + color + "\"> </span>" + (index === 5 ? "5+" : index + "-" + (index+1)) + "</li>");
+      // labels.push("<li style=\"background-color: " + color + "\"></li>" + "<div>" + (index === 5 ? "5+" : index + "-" + (index+1)) + "</div>");
+    });
+
+    div.innerHTML += "<div class=\"legend-scale\"><ul class=\"legend-labels\">" + labels.join("") + "</ul></div>";
+    return div;
+  };
+
+  // Adding legend to the map
+  legend.addTo(usgsMap);
 });
 
 // Create a dictionary of overlays

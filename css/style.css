@@ -8,3 +8,52 @@ body,
 html {
   height: 100%;
 }
+
+/* From https://tilemill-project.github.io/tilemill/docs/guides/advanced-legends/ */
+.my-legend ul.legend-labels {
+  list-style-type: none;
+}
+
+.my-legend {
+  background-color: white;
+  border-color: gray;
+}
+
+.my-legend .legend-title {
+  text-align: right;
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 90%;
+}
+.my-legend .legend-scale ul {
+  margin: 0;
+  margin-bottom: 5px;
+  padding: 0;
+  float: left;
+  list-style: none;
+}
+.my-legend .legend-scale ul li {
+  font-size: 80%;
+  list-style: none;
+  margin-left: 0;
+  margin-right: 5px;
+  line-height: 18px;
+  margin-bottom: 2px;
+}
+.my-legend ul.legend-labels li span {
+  display: block;
+  float: left;
+  height: 16px;
+  width: 30px;
+  margin-right: 5px;
+  margin-left: 5px;
+  border: none; /*1px solid #999;*/
+}
+.my-legend .legend-source {
+  font-size: 70%;
+  color: #999;
+  clear: both;
+}
+.my-legend a {
+  color: #777;
+}
