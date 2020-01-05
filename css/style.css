@@ -42,6 +42,7 @@ html {
 }
 .my-legend ul.legend-labels li span {
   display: block;
+  opacity: 50%;
   float: left;
   height: 16px;
   width: 30px;

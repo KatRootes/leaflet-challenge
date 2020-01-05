@@ -34,6 +34,12 @@ d3.json(geoData, function(data)
       // Check for location property
       if (location) 
       {
+        var msg = "<h3>Magnitude:  " + data.features[i].properties.mag + "</h3>" +
+          "<hr>" +
+          "<p>Type:  " + data.features[i].properties.type + "</p>" +
+          "<p>Place:  " + data.features[i].properties.place + "</p>" +
+          "<a src=\"" + data.features[i].properties.url + "\" href=\"" + data.features[i].properties.url + "\" target=\"_blank\">Link</a>";
+
         L.circle([location.coordinates[1],location.coordinates[0]], 
         {
           color: "black",
@@ -41,7 +47,7 @@ d3.json(geoData, function(data)
           fillOpacity: 0.5,
           radius: 2000.0 * data.features[i].properties.mag,
           weight: 0.5
-        }).addTo(earthquakeLayer);
+        }).bindPopup(msg).addTo(earthquakeLayer);
       }
    }
 
@@ -52,24 +58,11 @@ d3.json(geoData, function(data)
     var labels = [];
 
     // Add min & max
-    var legendInfo = //"<div class=\"my-legend\">" +
-      "<div class=\"legend-title\">Magnitude</div>";// +
-      // "<div class=\"legend-scale\">" +
-      // "</div>" + 
-      // "</div>";
-      // "<div class=\"labels\">" +
-        // "<div>0-1</div>" +
-        // "<div>1-2</div>" +
-        // "<div>2-3</div>" +
-        // "<div>3-4</div>" +
-        // "<div>5+</div>" +
-      // "</div>";
-
+    var legendInfo = "<div class=\"legend-title\">Magnitude</div>";
     div.innerHTML = legendInfo;
 
     colors.forEach(function(color, index) {
       labels.push("<li><span style=\"background-color: " + color + "\"> </span>" + (index === 5 ? "5+" : index + "-" + (index+1)) + "</li>");
-      // labels.push("<li style=\"background-color: " + color + "\"></li>" + "<div>" + (index === 5 ? "5+" : index + "-" + (index+1)) + "</div>");
     });
 
     div.innerHTML += "<div class=\"legend-scale\"><ul class=\"legend-labels\">" + labels.join("") + "</ul></div>";
