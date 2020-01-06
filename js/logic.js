@@ -18,7 +18,6 @@ function getColor(val)
   return color > 5 ? colors[5] : colors[color];
 }
 
-
 // Create a layer for earthquake data
 var earthquakeLayer = L.layerGroup().addTo(usgsMap);
 
@@ -38,7 +37,7 @@ d3.json(geoData, function(data)
           "<hr>" +
           "<p>Type:  " + data.features[i].properties.type + "</p>" +
           "<p>Place:  " + data.features[i].properties.place + "</p>" +
-          "<a src=\"" + data.features[i].properties.url + "\" href=\"" + data.features[i].properties.url + "\" target=\"_blank\">Link</a>";
+          "<a src=\"" + data.features[i].properties.url + "\" href=\"" + data.features[i].properties.url + "\" target=\"_blank\">More Information</a>";
 
         L.circle([location.coordinates[1],location.coordinates[0]], 
         {
@@ -73,9 +72,43 @@ d3.json(geoData, function(data)
   legend.addTo(usgsMap);
 });
 
+// Grab the fault line data
+var faultLinesLink = "/data/PB2002_plates.json";
+
+// Create a layer for fault line data
+var faultLineLayer = L.layerGroup().addTo(usgsMap);
+
+// Grabbing our GeoJSON data..
+d3.json(faultLinesLink, function(data) {
+  // Creating a geoJSON layer with the retrieved data
+  L.geoJson(data, {
+    // Style each feature (in this case a neighborhood)
+    style: function(feature) {
+      return {
+        color: "yellow",
+        // Call the chooseColor function to decide which color to color our neighborhood (color based on borough)
+        // fillColor: "red",
+        fillOpacity: 0.0,
+        weight: 1.5
+      };
+    },
+    // Called on each feature
+    onEachFeature: function(feature, layer) {
+      // Set mouse events to change map styling
+      layer.on({
+        // When a feature (neighborhood) is clicked, it is enlarged to fit the screen
+        click: function(event) {
+          map.fitBounds(event.target.getBounds());
+        }
+      });
+    }
+  }).addTo(faultLineLayer);
+});
+
 // Create a dictionary of overlays
 var overlayMaps = {
-    Earthquakes: earthquakeLayer
+    Earthquakes: earthquakeLayer,
+    Faultlines: faultLineLayer
 };
 
 // Pass our map layers into our layer control
