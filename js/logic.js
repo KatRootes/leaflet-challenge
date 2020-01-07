@@ -1,6 +1,7 @@
 // USGS Earthquake Data
-//var geoData = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_hour.geojson";
-var geoData = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson";
+var geoDataHour = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0_hour.geojson";
+var geoDataDay = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
+var geoDataMonth = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson";
 
 // Create map object and set default layers
 var start = [38.8, -122.8];
@@ -19,59 +20,54 @@ function getColor(val)
 }
 
 // Create a layer for earthquake data
-var earthquakeLayer = L.layerGroup().addTo(usgsMap);
+var earthquakeLayerHour = L.layerGroup().addTo(usgsMap);
+var earthquakeLayerDay = L.layerGroup().addTo(usgsMap);
+var earthquakeLayerMonth = L.layerGroup().addTo(usgsMap);
 
-// Grab data with d3
-d3.json(geoData, function(data) 
+// Create earthquake data
+createEarthquakeLayer(geoDataHour, earthquakeLayerHour);
+createEarthquakeLayer(geoDataDay, earthquakeLayerDay);
+createEarthquakeLayer(geoDataMonth, earthquakeLayerMonth);
+
+
+// Function to create an earthquake layer
+function createEarthquakeLayer(geoData, earthquakeLayer)
 {
-    // Loop through data
-    for (var i = 0; i < data.features.length; i++) 
-    {
-      // Set the data location property to a variable
-      var location = data.features[i].geometry;
-      
-      // Check for location property
-      if (location) 
+  // Grab data with d3
+  d3.json(geoData, function(data) 
+  {
+      // Loop through data
+      for (var i = 0; i < data.features.length; i++) 
       {
-        var msg = "<h3>Magnitude:  " + data.features[i].properties.mag + "</h3>" +
-          "<hr>" +
-          "<p>Type:  " + data.features[i].properties.type + "</p>" +
-          "<p>Place:  " + data.features[i].properties.place + "</p>" +
-          "<a src=\"" + data.features[i].properties.url + "\" href=\"" + data.features[i].properties.url + "\" target=\"_blank\">More Information</a>";
-
-        L.circle([location.coordinates[1],location.coordinates[0]], 
+        // Set the data location property to a variable
+        var location = data.features[i].geometry;
+        
+        // Check for location property
+        if (location) 
         {
-          color: "black",
-          fillColor: getColor(data.features[i].properties.mag),
-          fillOpacity: 0.5,
-          radius: 2000.0 * data.features[i].properties.mag,
-          weight: 0.5
-        }).bindPopup(msg).addTo(earthquakeLayer);
-      }
-   }
+          var msg = "<h3>Magnitude:  " + data.features[i].properties.mag + "</h3>" +
+            "<hr>" +
+            "<div>Date:  " + Date(data.features[i].properties.time) + "</div>" + 
+            "<div>Coordinates:  (" + location.coordinates[1] + ", " + location.coordinates[0] + ")</div>" +
+            "<div>Depth:  " + location.coordinates[2] + "</div>" +
+            "<div>IDs:  " + data.features[i].properties.ids + "</div>" +
+            "<div>Type:  " + data.features[i].properties.type + "</div>" +
+            "<div>Place:  " + data.features[i].properties.place + "</div>" +
+            "<a href=\"" + data.features[i].properties.url + "\" target=\"_blank\">More Information</a>";
 
-   // Set up the legend
-  var legend = L.control({ position: "bottomright" });
-  legend.onAdd = function() {
-    var div = L.DomUtil.create("div", "my-legend");
-    var labels = [];
-
-    // Add min & max
-    var legendInfo = "<div class=\"legend-title\">Magnitude</div>";
-    div.innerHTML = legendInfo;
-
-    colors.forEach(function(color, index) {
-      labels.push("<li><span style=\"background-color: " + color + "\"> </span>" + (index === 5 ? "5+" : index + "-" + (index+1)) + "</li>");
-    });
-
-    div.innerHTML += "<div class=\"legend-scale\"><ul class=\"legend-labels\">" + labels.join("") + "</ul></div>";
-    return div;
-  };
-
-  // Adding legend to the map
-  legend.addTo(usgsMap);
-});
-
+          L.circle([location.coordinates[1],location.coordinates[0]], 
+          {
+            color: "black",
+            fillColor: getColor(data.features[i].properties.mag),
+            fillOpacity: 0.5,
+            radius: 2000.0 * data.features[i].properties.mag,
+            weight: 0.5
+          }).bindPopup(msg).addTo(earthquakeLayer);
+        }
+    }
+  });
+}
+ 
 // Grab the fault line data
 var faultLinesLink = "/data/PB2002_plates.json";
 
@@ -79,11 +75,14 @@ var faultLinesLink = "/data/PB2002_plates.json";
 var faultLineLayer = L.layerGroup().addTo(usgsMap);
 
 // Grabbing our GeoJSON data..
-d3.json(faultLinesLink, function(data) {
+d3.json(faultLinesLink, function(data) 
+{
   // Creating a geoJSON layer with the retrieved data
-  L.geoJson(data, {
+  L.geoJson(data, 
+  {
     // Style each feature (in this case a neighborhood)
-    style: function(feature) {
+    style: function(feature) 
+    {
       return {
         color: "yellow",
         // Call the chooseColor function to decide which color to color our neighborhood (color based on borough)
@@ -91,23 +90,15 @@ d3.json(faultLinesLink, function(data) {
         fillOpacity: 0.0,
         weight: 1.5
       };
-    },
-    // Called on each feature
-    onEachFeature: function(feature, layer) {
-      // Set mouse events to change map styling
-      layer.on({
-        // When a feature (neighborhood) is clicked, it is enlarged to fit the screen
-        click: function(event) {
-          map.fitBounds(event.target.getBounds());
-        }
-      });
     }
   }).addTo(faultLineLayer);
 });
 
 // Create a dictionary of overlays
 var overlayMaps = {
-    Earthquakes: earthquakeLayer,
+    EarthquakesLastHour: earthquakeLayerHour,
+    EarthquakesLastDay: earthquakeLayerDay,
+    EarthquakesLastMonth: earthquakeLayerMonth,
     Faultlines: faultLineLayer
 };
 
