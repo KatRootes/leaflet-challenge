@@ -29,6 +29,8 @@ createEarthquakeLayer(geoDataHour, earthquakeLayerHour);
 createEarthquakeLayer(geoDataDay, earthquakeLayerDay);
 createEarthquakeLayer(geoDataMonth, earthquakeLayerMonth);
 
+// Create the legend
+createLegend();
 
 // Function to create an earthquake layer
 function createEarthquakeLayer(geoData, earthquakeLayer)
@@ -85,8 +87,6 @@ d3.json(faultLinesLink, function(data)
     {
       return {
         color: "yellow",
-        // Call the chooseColor function to decide which color to color our neighborhood (color based on borough)
-        // fillColor: "red",
         fillOpacity: 0.0,
         weight: 1.5
       };
@@ -94,12 +94,36 @@ d3.json(faultLinesLink, function(data)
   }).addTo(faultLineLayer);
 });
 
+function createLegend()
+{
+   // Set up the legend
+   var legend = L.control({ position: "bottomright" });
+   legend.onAdd = function() {
+     var div = L.DomUtil.create("div", "my-legend");
+     var labels = [];
+ 
+     // Add min & max
+     var legendInfo = "<div class=\"legend-title\">Magnitude</div>";
+     div.innerHTML = legendInfo;
+ 
+     colors.forEach(function(color, index) {
+       labels.push("<li><span style=\"background-color: " + color + "\"> </span>" + (index === 5 ? "5+" : index + "-" + (index+1)) + "</li>");
+     });
+ 
+     div.innerHTML += "<div class=\"legend-scale\"><ul class=\"legend-labels\">" + labels.join("") + "</ul></div>";
+     return div;
+   };
+ 
+  // Adding legend to the map
+  legend.addTo(usgsMap);
+}
+
 // Create a dictionary of overlays
 var overlayMaps = {
-    EarthquakesLastHour: earthquakeLayerHour,
-    EarthquakesLastDay: earthquakeLayerDay,
-    EarthquakesLastMonth: earthquakeLayerMonth,
-    Faultlines: faultLineLayer
+    "Earthquakes Last Hour": earthquakeLayerHour,
+    "Earthquakes Last Day": earthquakeLayerDay,
+    "Earthquakes Last Month": earthquakeLayerMonth,
+    "Fault Lines": faultLineLayer
 };
 
 // Pass our map layers into our layer control

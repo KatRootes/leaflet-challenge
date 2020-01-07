@@ -116,18 +116,18 @@ var highContrast = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}
 
 // Only one base layer can be shown at a time
 var baseMaps = {
-  Streets: streets,
-  Light: light,
-  Dark: dark,
-  Satellite: satellite,
-  StreetsSatellite: streetsSatellite,
-  Wheatpaste: wheatpaste,
-  StreetsBasic: streetsBasic,
-  Comic: comic,
-  Outdoors: outdoors,
-  RunBikeHike: runBikeHike,
-  Pencil: pencil,
-  Pirates: pirates,
-  Emerald: emerald,
-  HighContrast: highContrast
+  "Streets": streets,
+  "Light": light,
+  "Dark": dark,
+  "Satellite": satellite,
+  "Streets Satellite": streetsSatellite,
+  "Wheatpaste": wheatpaste,
+  "Streets Basic": streetsBasic,
+  "Comic": comic,
+  "Outdoors": outdoors,
+  "Run Bike Hike": runBikeHike,
+  "Pencil": pencil,
+  "Pirates": pirates,
+  "Emerald": emerald,
+  "High Contrast": highContrast
 };
