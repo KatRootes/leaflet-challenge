@@ -71,7 +71,7 @@ function createEarthquakeLayer(geoData, earthquakeLayer)
 }
  
 // Grab the fault line data
-var faultLinesLink = "/data/PB2002_plates.json";
+var faultLinesLink = "PB2002_plates.json";
 
 // Create a layer for fault line data
 var faultLineLayer = L.layerGroup().addTo(usgsMap);
