@@ -7,6 +7,7 @@ https://katrootes.github.io/leaflet-challenge/
 # Technologies and Resources
 D3
 JavaScript
+GeoJson
 Leaflet - Multiple Maps to Select From
 Leaflet Grouped Layer Control
 Earthquake Data:  [USGS GeoJSON Feed](http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php)
