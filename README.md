@@ -5,13 +5,13 @@ https://katrootes.github.io/leaflet-challenge/
 
 
 # Technologies and Resources
-D3
-JavaScript
-GeoJson
-Leaflet - Multiple Maps to Select From
-Leaflet Grouped Layer Control
-Earthquake Data:  [USGS GeoJSON Feed](http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php)
-Fault Lines:  <https://github.com/fraxen/tectonicplates>
+* D3
+* JavaScript
+* GeoJson
+* Leaflet - Multiple Maps to Select From
+* Leaflet Grouped Layer Control
+* Earthquake Data:  [USGS GeoJSON Feed](http://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php)
+* Fault Lines:  <https://github.com/fraxen/tectonicplates>
 
 # Example Screen Shots
 Shows the Light Map selection with hourly earthquakes and fault lines turned on.
