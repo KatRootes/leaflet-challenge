@@ -17,5 +17,5 @@ Fault Lines:  <https://github.com/fraxen/tectonicplates>
 Shows the Light Map selection with hourly earthquakes and fault lines turned on.
 ![Map](https://github.com/KatRootes/leaflet-challenge/blob/master/ScreenShot2.PNG)
 
-Shows an example of a popup for a particular earthquake.
+Shows an example of a popup wiht details for a particular earthquake.
 ![Information](https://github.com/KatRootes/leaflet-challenge/blob/master/Capture.PNG)
