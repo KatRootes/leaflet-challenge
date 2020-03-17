@@ -3,13 +3,10 @@ var geoDataHour = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/1.0
 var geoDataDay = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson";
 var geoDataMonth = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson";
 
-// Create map object and set default layers
-var start = [38.8, -122.8];
-var usgsMap = L.map("map", {
-  center: start,
-  zoom: 6,
-  layers: [baseMaps.Light]
-});
+ 
+// Grab the fault line data
+var faultLinesLink = "PB2002_plates.json";
+
 
 // Create a function to assign a color
 var colors = ["Green", "Yellow", "GoldenRod", "Orange", "OrangeRed", "Red"];
@@ -19,15 +16,32 @@ function getColor(val)
   return color > 5 ? colors[5] : colors[color];
 }
 
-// Create a layer for earthquake data
-var earthquakeLayerHour = L.layerGroup().addTo(usgsMap);
-var earthquakeLayerDay = L.layerGroup().addTo(usgsMap);
-var earthquakeLayerMonth = L.layerGroup().addTo(usgsMap);
+// Create a dictionary of overlays
+var groupedOverlays = {
+  "Overlays": {
+    "Earthquakes Last Hour": createEarthquakeLayer(geoDataHour, L.layerGroup()),
+    "Earthquakes Last Day": createEarthquakeLayer(geoDataDay, L.layerGroup()),
+    "Earthquakes Last Month": createEarthquakeLayer(geoDataMonth, L.layerGroup())
+  },
+  "FaultLines": {
+    "Fault Lines": L.layerGroup()
+  }
+};
 
-// Create earthquake data
-createEarthquakeLayer(geoDataHour, earthquakeLayerHour);
-createEarthquakeLayer(geoDataDay, earthquakeLayerDay);
-createEarthquakeLayer(geoDataMonth, earthquakeLayerMonth);
+var options = {
+  exclusiveGroups: ["Overlays"],
+  groupCheckBoxes: true
+};
+
+// Create map object and set default layers
+var start = [38.8, -122.8];
+var usgsMap = L.map("map", {
+  center: start,
+  zoom: 6,
+  layers: [baseMaps.Light, groupedOverlays.Overlays["Earthquakes Last Month"], groupedOverlays.FaultLines["Fault Lines"]]
+});
+
+L.control.groupedLayers(baseMaps, groupedOverlays, options).addTo(usgsMap);
 
 // Create the legend
 createLegend();
@@ -68,13 +82,9 @@ function createEarthquakeLayer(geoData, earthquakeLayer)
         }
     }
   });
-}
- 
-// Grab the fault line data
-var faultLinesLink = "PB2002_plates.json";
 
-// Create a layer for fault line data
-var faultLineLayer = L.layerGroup().addTo(usgsMap);
+  return earthquakeLayer;
+}
 
 // Grabbing our GeoJSON data..
 d3.json(faultLinesLink, function(data) 
@@ -91,7 +101,7 @@ d3.json(faultLinesLink, function(data)
         weight: 1.5
       };
     }
-  }).addTo(faultLineLayer);
+  }).addTo(groupedOverlays.FaultLines["Fault Lines"]);
 });
 
 function createLegend()
@@ -118,14 +128,4 @@ function createLegend()
   legend.addTo(usgsMap);
 }
 
-// Create a dictionary of overlays
-var overlayMaps = {
-    "Earthquakes Last Hour": earthquakeLayerHour,
-    "Earthquakes Last Day": earthquakeLayerDay,
-    "Earthquakes Last Month": earthquakeLayerMonth,
-    "Fault Lines": faultLineLayer
-};
 
-// Pass our map layers into our layer control
-// Add the layer control to the map
-L.control.layers(baseMaps, overlayMaps).addTo(usgsMap);
